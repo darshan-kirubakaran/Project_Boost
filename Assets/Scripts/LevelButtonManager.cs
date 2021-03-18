@@ -47,7 +47,16 @@ public class LevelButtonManager : MonoBehaviour
 
     private void TaskOnClick()
     {
-        SceneManager.LoadScene(levelScene.name);
+        if (PlayerPrefsController.GetLives() <= 0)
+        {
+            Time.timeScale = 1f;
+            PlayerPrefsController.SetLives(3);
+            SceneManager.LoadScene(levelScene.name);
+        }
+        else
+        {
+            SceneManager.LoadScene(levelScene.name);
+        }
     }
 
     // Update is called once per frame

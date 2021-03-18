@@ -13,11 +13,13 @@ public class GameSession : MonoBehaviour
     [SerializeField] TextMeshProUGUI livesText;
 
     SceneLoader sceneLoader;
+    LevelController levelController;
 
     // Start is called before the first frame update
     void Start()
     {
         sceneLoader = FindObjectOfType<SceneLoader>();
+        levelController = FindObjectOfType<LevelController>();
 
         PlayerPrefs.SetString("SavedLevel", SceneManager.GetActiveScene().name);
     }
@@ -34,11 +36,16 @@ public class GameSession : MonoBehaviour
 
         if (PlayerPrefsController.GetLives() <= 0)
         {
-            sceneLoader.Invoke("LoadMainMenu", levelLoadDelay);
+            levelController.HandleLooseCondition();
         }
         else
         {
             sceneLoader.Invoke("Respawn", levelLoadDelay);
         }
+    }
+
+    public void AddToNumberOfGamesPlayed(int GameNumber)
+    {
+        PlayerPrefs.SetInt("GamesPlayed", PlayerPrefs.GetInt("GamesPlayed") + GameNumber);
     }
 }

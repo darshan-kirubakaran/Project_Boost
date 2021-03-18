@@ -10,8 +10,12 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenuUI;
     public GameObject pauseButton;
 
+    Timer timer;
+
     private void Start()
     {
+        timer = FindObjectOfType<Timer>();
+
         pauseMenuUI.SetActive(false);    
         pauseButton.SetActive(true);    
     }
@@ -42,6 +46,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
+        timer.StartTimer();
         pauseMenuUI.SetActive(false);
         pauseButton.SetActive(true);
         Time.timeScale = 1f;
@@ -50,6 +55,7 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
+        timer.StopTimer();
         pauseMenuUI.SetActive(true);
         pauseButton.SetActive(false);
         Time.timeScale = 0f;

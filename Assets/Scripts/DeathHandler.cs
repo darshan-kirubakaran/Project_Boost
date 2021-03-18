@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DeathHandler : MonoBehaviour
 {
+    [SerializeField] int numberOfGamesForAds = 2;
+
     [SerializeField] AudioClip Success;
     [SerializeField] AudioClip Death;
 
@@ -32,6 +33,13 @@ public class DeathHandler : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(Success);
         SuccessParticals.Play();
+
+        if (PlayerPrefs.GetInt("GamesPlayed") % numberOfGamesForAds == 0)
+        {
+            audioSource.Stop();
+            //FindObjectOfType<Ads>().DisplayVideoAD();
+        }
+
         levelController.HandleWinCondition();
     }
 
@@ -42,6 +50,13 @@ public class DeathHandler : MonoBehaviour
         audioSource.Stop();
         audioSource.PlayOneShot(Death);
         DeathParticals.Play();
+
+        if (PlayerPrefs.GetInt("GamesPlayed") % numberOfGamesForAds == 0)
+        {
+            audioSource.Stop();
+            //FindObjectOfType<Ads>().DisplayVideoAD();
+        }
+
         gameSession.DeacreaseLives();
     }
 }

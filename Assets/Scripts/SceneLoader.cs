@@ -8,12 +8,14 @@ public class SceneLoader : MonoBehaviour
     Rocket rocket;
     PauseMenu pauseMenu;
     GameObject optionsCanvas;
+    Timer timer;
 
 
     private void Start()
     {
         optionsCanvas = GameObject.Find("Options Canvas");
         rocket = FindObjectOfType<Rocket>();
+        timer = FindObjectOfType<Timer>();
         if(FindObjectOfType<PauseMenu>())
         {
             pauseMenu = FindObjectOfType<PauseMenu>();
@@ -24,7 +26,10 @@ public class SceneLoader : MonoBehaviour
             PlayerPrefsController.SetLives(3);
             PlayerPrefs.SetString("SavedLevel", "Level 1");
         }
-        optionsCanvas.SetActive(false);
+        if(optionsCanvas = GameObject.Find("Options Canvas"))
+        {
+            optionsCanvas.SetActive(false);
+        }
     }
 
     public void Play()
@@ -61,15 +66,23 @@ public class SceneLoader : MonoBehaviour
     public void LoadMainMenu()
     {
         Time.timeScale = 1f;
-        if(pauseMenu != null)
+        timer.ResetTimer();
+        if (pauseMenu != null)
         {
             pauseMenu.ChangeGameISPaused(false);
         }
         SceneManager.LoadScene("Main Menu");
     }
+    
+    public void BackForLevelsPage()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Main Menu");
+    }
 
     public void Respawn()
     {
+        timer.ResetTimer();
         rocket.canMove = true;
         string currentScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentScene);
@@ -77,6 +90,7 @@ public class SceneLoader : MonoBehaviour
 
     public void LoadNextLevel()
     {
+        timer.ResetTimer();
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         int nextSceneIndex = currentSceneIndex + 1;
         if (nextSceneIndex == SceneManager.sceneCountInBuildSettings)
@@ -84,6 +98,11 @@ public class SceneLoader : MonoBehaviour
             nextSceneIndex = 0;
         }
         SceneManager.LoadScene(nextSceneIndex);
+    }
+
+    public void LoadLevelsPage()
+    {
+        SceneManager.LoadScene("Levels Page");
     }
 
     public void Quit()

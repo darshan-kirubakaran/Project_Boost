@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityStandardAssets.CrossPlatformInput;
 
 public class Rocket : MonoBehaviour
@@ -26,19 +27,29 @@ public class Rocket : MonoBehaviour
     GameSession gameSession;
     SceneLoader sceneLoader;
     DeathHandler deathHandler;
+    Timer timer;
+    LevelButtonManager levelButtonManager;
 
     public bool canMove = true;
     public bool isTransitioning = false;
     bool collisionAreDisabled = false;
+    int GameNumber = 1;
+    string currentsceneName;
 
     void Start()
     {
+        currentsceneName = SceneManager.GetActiveScene().name;
+
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
 
         gameSession = FindObjectOfType<GameSession>();
         sceneLoader = FindObjectOfType<SceneLoader>();
         deathHandler = FindObjectOfType<DeathHandler>();
+        timer = FindObjectOfType<Timer>();
+        levelButtonManager = FindObjectOfType<LevelButtonManager>();
+
+        FindObjectOfType<GameSession>().AddToNumberOfGamesPlayed(GameNumber);
     }
 
     void Update()
@@ -86,9 +97,24 @@ public class Rocket : MonoBehaviour
                 print("OK");
                 break;
             case "Finish":
+                // Stoping Timer...
+                timer.StopTimer();
+
+                //Checking if Highsore...
+                if (PlayerPrefs.HasKey(currentsceneName) == false)
+                {
+                    PlayerPrefs.SetFloat(currentsceneName, timer.Returnmsec());
+                }
+                else if(PlayerPrefs.GetFloat(currentsceneName) > timer.Returnmsec())
+                {
+                    PlayerPrefs.SetFloat(currentsceneName, timer.Returnmsec());
+                }
                 deathHandler.StartSuccessSequence();
                 break;
             default:
+                // Stoping Timer...
+                timer.StopTimer();
+
                 deathHandler.StartDeathSequence();
                 break;
 

@@ -2,73 +2,108 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Advertisements;
+using GoogleMobileAds.Api;
 
-public class Ads : MonoBehaviour//, IUnityAdsListener
+public class Ads : MonoBehaviour
 {
-    /*string GooglePlay_ID = "4042559";
-    string myPlacementId = "rewardedVideo";
-    bool TestMode = true;
+    private BannerView bannerView;
+    private InterstitialAd interstitial;
+    private RewardedAd rewardedAd;
+
+    SceneLoader sceneLoader;
 
     // Start is called before the first frame update
     void Start()
     {
-        Advertisement.AddListener(this);
-        Advertisement.Initialize(GooglePlay_ID, TestMode);
+        sceneLoader = FindObjectOfType<SceneLoader>();
+
+        MobileAds.Initialize(initStatus => { });
+        RequestBanner();
     }
 
-    public void DisplayInterstitialAD()
+    // Update is called once per frame
+    void Update()
     {
-        Advertisement.Show();
+
     }
 
-    public void DisplayVideoAD()
+    private void RequestBanner()
     {
-        Advertisement.Show(myPlacementId);
+#if UNITY_ANDROID
+        string adUnitId = "ca-app-pub-8161422785982179/3882609300";
+#elif UNITY_IPHONE
+            string adUnitId = "ca-app-pub-3940256099942544/2934735716";
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+
+        // Create a 320x50 banner at the top of the screen.
+        bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
+        AdRequest request = new AdRequest.Builder().Build();
+
+        // Load the banner with the request.
+        this.bannerView.LoadAd(request);
+    }
+    public void RequestInterstitial()
+    {
+#if UNITY_ANDROID
+        string adUnitId = "ca-app-pub-8161422785982179/2312175639";
+#elif UNITY_IPHONE
+        string adUnitId = "ca-app-pub-3940256099942544/4411468910";
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+
+        // Initialize an InterstitialAd.
+        interstitial = new InterstitialAd(adUnitId);
+        AdRequest request = new AdRequest.Builder().Build();
+        // Load the interstitial with the request.
+        interstitial.LoadAd(request);
+        interstitial.OnAdLoaded += Interstitial_OnAdLoaded;
     }
 
-    // Implement IUnityAdsListener interface methods:
-    public void OnUnityAdsDidFinish(string placementId, ShowResult showResult)
+    private void Interstitial_OnAdLoaded(object sender, System.EventArgs e)
     {
-        // Define conditional logic for each ad completion status:
-        if (showResult == ShowResult.Finished)
-        {
-            // Reward the user for watching the ad to completion.
-            Debug.Log("You got a $1000");
-        }
-        else if (showResult == ShowResult.Skipped)
-        {
-            Debug.Log("You got a $1000");
-        }
-        else if (showResult == ShowResult.Failed)
-        {
-            Debug.LogWarning("The ad did not finish due to an error.");
-        }
+        interstitial.Show();
     }
 
-    public void OnUnityAdsReady(string placementId)
+    public void CreateAndLoadRewardedAd()
     {
-        // If the ready Placement is rewarded, show the ad:
-        if (placementId == myPlacementId)
-        {
-            // Optional actions to take when the placement becomes ready(For example, enable the rewarded ads button)
-        }
+#if UNITY_ANDROID
+        string adUnitId = "ca-app-pub-8161422785982179/2852065830";
+#elif UNITY_IPHONE
+            string adUnitId = "ca-app-pub-3940256099942544/1712485313";
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+
+        rewardedAd = new RewardedAd(adUnitId);
+
+        rewardedAd.OnAdLoaded += RewardedAd_OnAdLoaded;
+        rewardedAd.OnUserEarnedReward += RewardedAd_OnUserEarnedReward;
+        rewardedAd.OnAdClosed += RewardedAd_OnAdClosed;
+
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+        // Load the rewarded ad with the request.
+        rewardedAd.LoadAd(request);
     }
 
-    public void OnUnityAdsDidError(string message)
+    private void RewardedAd_OnAdClosed(object sender, System.EventArgs e)
     {
-        // Log the error.
+        //ad has been closed by the user
     }
 
-    public void OnUnityAdsDidStart(string placementId)
+    private void RewardedAd_OnUserEarnedReward(object sender, Reward e)
     {
-        // Optional actions to take when the end-users triggers an ad.
+        //reward your user
+        PlayerPrefsController.SetLives(1);
+        sceneLoader.Invoke("Respawn", 0);
     }
 
-    // When the object that subscribes to ad events is destroyed, remove the listener:
-    public void OnDestroy()
+    private void RewardedAd_OnAdLoaded(object sender, System.EventArgs e)
     {
-        Advertisement.RemoveListener(this);
-    }*/
+        rewardedAd.Show();
+    }
 
 }

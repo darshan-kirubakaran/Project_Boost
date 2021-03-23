@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 using UnityEngine.UI;
 
 public class LevelButtonManager : MonoBehaviour
 {
-    [SerializeField] SceneAsset levelScene; 
+    GameObject levelScene; 
     string levelNumber; 
     TextMeshProUGUI levelNumberText; 
     TextMeshProUGUI timeText;
@@ -21,6 +20,8 @@ public class LevelButtonManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        levelScene = this.gameObject;
 
         levelNumberText = this.transform.Find("Level Number Text").GetComponent<TextMeshProUGUI>();
         timeText = this.transform.Find("Time Text").GetComponent<TextMeshProUGUI>();

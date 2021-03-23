@@ -157,4 +157,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waitToLoad: 5
-  WinLabel: {fileID: 0}
+  levelLoadDelay: 2
+  ReviveTime: 10

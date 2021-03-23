@@ -14,11 +14,13 @@ public class LevelController : MonoBehaviour
     float StartTime = 0;
 
     SceneLoader sceneLoader;
+    Ads ads;
 
     // Start is called before the first frame update
     void Start()
     {
         sceneLoader = FindObjectOfType<SceneLoader>();
+        ads = FindObjectOfType<Ads>();
 
         WinLabel = GameObject.Find("Win Label");
         LooseLabel = GameObject.Find("Loose Label");
@@ -68,7 +70,6 @@ public class LevelController : MonoBehaviour
         //LooseLabel.SetActive(false);
         //Revive.SetActive(false);
 
-        PlayerPrefsController.SetLives(1);
-        sceneLoader.Invoke("Respawn", 0);
+        ads.CreateAndLoadRewardedAd();
     }
 }
